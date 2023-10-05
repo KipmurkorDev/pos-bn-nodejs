@@ -13,14 +13,15 @@ const getUsers = async (req: Request, res: Response): Promise<void> => {
 
 const addUser = async (req: Request, res: Response): Promise<void> => {
     try {
-        const body = req.body as Pick<IUser, "firstName" | "lastName" | "email" | "role">
+        const body = req.body as Pick<IUser, "firstName" | "lastName" | "email" | "role" | "password">
 
 
         const user: IUser = new User({
             firstName: body.firstName,
             lastName: body.lastName,
             email: body.email,
-            role: body.role
+            role: body.role,
+            password: body.password,
         })
 
 

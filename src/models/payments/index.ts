@@ -1,7 +1,7 @@
-import { IProject } from "../../types/projects"
+import { IPayment } from "../../types/payments"
 import { model, Schema } from "mongoose"
 
-const projectSchema: Schema = new Schema(
+const paymentSchema: Schema = new Schema(
     {
         name: {
             type: String,
@@ -21,4 +21,4 @@ const projectSchema: Schema = new Schema(
     { timestamps: true }
 )
 
-export default model<IProject>("Project", projectSchema)
+export default model<IPayment>("Payment", paymentSchema)
