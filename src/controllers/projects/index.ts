@@ -10,11 +10,20 @@ const getProjects = async (req: Request, res: Response): Promise<void> => {
         throw error
     }
 }
+export const getProject = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const project: IProject | null = await Project.findOne({ _id: req.params._id })
+        res.status(200).json({ project })
+    } catch (error) {
+        throw error
+    }
+}
+
 
 const addProject = async (req: Request, res: Response): Promise<void> => {
     try {
         const body = req.body as Pick<IProject, "name" | "description" | "link">
-
+        console.log({ body })
 
         const project: IProject = new Project({
             name: body.name,

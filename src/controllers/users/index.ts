@@ -43,10 +43,9 @@ const addUser = async (req: Request, res: Response): Promise<void> => {
         const newUser: IUser = await user.save()
 
         const accessToken = jwt.sign({ email: user.email, id: user.id }, secretKey);
-        res.json({ accessToken, user: newUser });
-        res
-            .status(201)
-            .json({ message: "User added", user: newUser })
+
+        res.status(201).json({ message: "User added", accessToken, user: newUser });
+
     } catch (error) {
         res
             .status(500)
