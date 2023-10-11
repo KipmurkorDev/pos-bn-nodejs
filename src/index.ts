@@ -3,6 +3,8 @@ import mongoose, { ConnectOptions } from "mongoose";
 import cors from "cors";
 import userRoutes from "./routes/users";
 import projectsRoutes from "./routes/projects";
+import pullRequestsRoutes from "./routes/pullRequests";
+
 import bodyParser from 'body-parser'
 
 require('dotenv').config();
@@ -19,6 +21,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(userRoutes);
 app.use(projectsRoutes);
+app.use(pullRequestsRoutes);
 
 const uri: string = `mongodb+srv://carenkurgat765:${process.env.MONGO_PASSWORD}@pos0.lcyyjkc.mongodb.net/`;
 

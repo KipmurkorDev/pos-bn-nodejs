@@ -1,20 +1,40 @@
 import { Response, Request } from "express"
 import { IProject } from "../../types/projects"
 import Project from "../../models/projects"
+import PullRequests from "../../models/pullRequests"
+import Issues from "../../models/issues"
 
-const getProjects = async (req: Request, res: Response): Promise<void> => {
+export const getGlobalProjects = async (req: Request, res: Response): Promise<void> => {
     try {
-        const projects: IProject[] = await Project.find()
-        res.status(200).json({ projects })
+        const globalProjects: IProject[] = await Project.find()
+        res.status(200).json({ globalProjects })
     } catch (error) {
         throw error
     }
 }
 
+export const getUserProjects = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userProjects: IProject[] = await Project.find()
+        res.status(200).json({ userProjects })
+    } catch (error) {
+        throw error
+    }
+}
+
+export const getProject = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const project: IProject | null = await Project.findOne({ _id: req.params.projectId })
+        res.status(200).json({ project })
+    } catch (error) {
+        throw error
+    }
+}
+
+
 const addProject = async (req: Request, res: Response): Promise<void> => {
     try {
-        const body = req.body as Pick<IProject, "name" | "description" | "link">
-
+        const body = req.body
 
         const project: IProject = new Project({
             name: body.name,
@@ -24,11 +44,12 @@ const addProject = async (req: Request, res: Response): Promise<void> => {
 
 
         const newProject: IProject = await project.save()
-        const allProjects: IProject[] = await Project.find()
+        const pullRequests = await PullRequests.insertMany(body.pullRequests.map((pullRequest: any) => ({ ...pullRequest, projectId: newProject._id })))
+        const issues = await Issues.insertMany(body.issues.map((issue: any) => ({ ...issue, projectId: newProject._id })))
 
         res
             .status(201)
-            .json({ message: "Project added", project: newProject, projects: allProjects })
+            .json({ message: "Project added", project: newProject, pullRequests, issues })
     } catch (error) {
         throw error
     }
@@ -71,7 +92,7 @@ const deleteProject = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-export { getProjects, addProject, updateProject, deleteProject }
+export { addProject, updateProject, deleteProject }
 
 
 

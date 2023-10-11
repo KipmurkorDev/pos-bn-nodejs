@@ -11,7 +11,16 @@ const getUsers = async (req: Request, res: Response): Promise<void> => {
         const users: IUser[] = await User.find()
         res.status(200).json({ users })
     } catch (error) {
-        throw error
+        res.status(500).json({ message: "Uncaught Error", error })
+    }
+}
+
+export const getUser = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const user: IUser | null = await User.findOne({ _id: req.params.userId })
+        res.status(200).json({ user, _id: req.params.userId })
+    } catch (error) {
+        res.status(500).json({ message: "Uncaught Error", error })
     }
 }
 
@@ -22,7 +31,7 @@ async function hashPassword(password: string): Promise<string> {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
         return hashedPassword;
     } catch (error) {
-        throw error;
+        throw (error)
     }
 }
 
@@ -43,10 +52,9 @@ const addUser = async (req: Request, res: Response): Promise<void> => {
         const newUser: IUser = await user.save()
 
         const accessToken = jwt.sign({ email: user.email, id: user.id }, secretKey);
-        res.json({ accessToken, user: newUser });
-        res
-            .status(201)
-            .json({ message: "User added", user: newUser })
+
+        res.status(201).json({ message: "User added", accessToken, user: newUser });
+
     } catch (error) {
         res
             .status(500)
@@ -98,7 +106,7 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
             users: allUsers,
         })
     } catch (error) {
-        throw error
+        res.status(500).json({ message: "Uncaught Error", error })
     }
 }
 
@@ -114,7 +122,7 @@ const deleteUser = async (req: Request, res: Response): Promise<void> => {
             users: allUsers,
         })
     } catch (error) {
-        throw error
+        res.status(500).json({ message: "Uncaught Error", error })
     }
 }
 

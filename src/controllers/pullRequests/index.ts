@@ -2,19 +2,37 @@ import { Response, Request } from "express"
 import { IPullRequest } from "../../types/pullRequests"
 import PullRequest from "../../models/pullRequests"
 
-const getPullRequests = async (req: Request, res: Response): Promise<void> => {
+export const getGlobalPullRequests = async (req: Request, res: Response): Promise<void> => {
     try {
-        const pullRequests: IPullRequest[] = await PullRequest.find()
-        res.status(200).json({ pullRequests })
+        const globalPullRequests: IPullRequest[] = await PullRequest.find()
+        res.status(200).json({ globalPullRequests })
     } catch (error) {
         throw error
     }
 }
 
-const addPullRequest = async (req: Request, res: Response): Promise<void> => {
+export const getUserPullRequests = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userPullRequests: IPullRequest[] = await PullRequest.find({ _id: req.params.userId })
+        res.status(200).json({ userPullRequests })
+    } catch (error) {
+        throw error
+    }
+}
+
+export const getPullRequest = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const pullRequest: IPullRequest | null = await PullRequest.findOne({ _id: req.params.pullRequestId })
+        res.status(200).json({ pullRequest })
+    } catch (error) {
+        throw error
+    }
+}
+
+
+export const addPullRequest = async (req: Request, res: Response): Promise<void> => {
     try {
         const body = req.body
-
 
         const pullRequest: IPullRequest = new PullRequest({
             name: body.name,
@@ -22,19 +40,17 @@ const addPullRequest = async (req: Request, res: Response): Promise<void> => {
             link: body.link,
         })
 
-
         const newPullRequest: IPullRequest = await pullRequest.save()
-        const allPullRequests: IPullRequest[] = await PullRequest.find()
 
         res
             .status(201)
-            .json({ message: "PullRequest added", pullRequest: newPullRequest, pullRequests: allPullRequests })
+            .json({ message: "PullRequest added", pullRequest: newPullRequest })
     } catch (error) {
         throw error
     }
 }
 
-const updatePullRequest = async (req: Request, res: Response): Promise<void> => {
+export const updatePullRequest = async (req: Request, res: Response): Promise<void> => {
     try {
         const {
             params: { id },
@@ -55,7 +71,7 @@ const updatePullRequest = async (req: Request, res: Response): Promise<void> => 
     }
 }
 
-const deletePullRequest = async (req: Request, res: Response): Promise<void> => {
+export const deletePullRequest = async (req: Request, res: Response): Promise<void> => {
     try {
         const deletedPullRequest: IPullRequest | null = await PullRequest.findByIdAndRemove(
             req.params.id
@@ -70,8 +86,3 @@ const deletePullRequest = async (req: Request, res: Response): Promise<void> => 
         throw error
     }
 }
-
-export { getPullRequests, addPullRequest, updatePullRequest, deletePullRequest }
-
-
-
