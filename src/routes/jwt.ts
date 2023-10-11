@@ -5,6 +5,8 @@ const secretKey = 'your-secret-key';
 export const authenticateToken = (req: Request, res: Response, next: NextFunction) => {
     const token = req.headers['authorization'];
 
+    console.log({ token });
+
     if (!token) return res.sendStatus(401);
 
     jwt.verify(token as string, secretKey, (err, user) => {

@@ -1,15 +1,18 @@
 import { Router } from "express"
-import { getProjects, addProject, updateProject, deleteProject } from "../../controllers/projects"
+import { getProjects, addProject, updateProject, deleteProject, getProject } from "../../controllers/projects"
 import { authenticateToken } from '../jwt'
+import { getPullRequests, getGitHubIssues } from '../../middlewares/getPullRequests'
 
 const router: Router = Router()
 
 router.get("/projects", authenticateToken, getProjects)
 
-router.post("/add-project", authenticateToken, addProject)
+router.get("/projects/:_id", authenticateToken, getProject)
 
-router.put("/edit-project/:id", authenticateToken, updateProject)
+router.post("/add-project", authenticateToken, getPullRequests, getGitHubIssues, addProject)
 
-router.delete("/delete-project/:id", authenticateToken, deleteProject)
+router.put("/edit-project/:_id", authenticateToken, updateProject)
+
+router.delete("/delete-project/:_id", authenticateToken, deleteProject)
 
 export default router
