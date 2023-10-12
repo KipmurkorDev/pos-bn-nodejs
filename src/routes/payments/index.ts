@@ -1,6 +1,7 @@
 import { Router } from "express"
 import { getPayments, addPayment, updatePayment, deletePayment } from "../../controllers/payments"
 import { authenticateToken } from '../jwt'
+// import paginate from '../../middlewares/paginate'
 
 const router: Router = Router()
 

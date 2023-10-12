@@ -1,26 +1,36 @@
-import { Response, Request } from "express"
+import { Response, Request, NextFunction } from "express"
 import { IPullRequest } from "../../types/pullRequests"
 import PullRequest from "../../models/pullRequests"
+import { log } from "console"
 
-export const getGlobalPullRequests = async (req: Request, res: Response): Promise<void> => {
+export const getGlobalPullRequests = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const globalPullRequests: IPullRequest[] = await PullRequest.find()
-        res.status(200).json({ globalPullRequests })
+        req.body.paginate = { model: 'pullRequests', collection: PullRequest, key: 'globalPullRequests' }
+        next()
     } catch (error) {
         throw error
     }
 }
 
-export const getUserPullRequests = async (req: Request, res: Response): Promise<void> => {
+export const getUserPullRequests = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const userPullRequests: IPullRequest[] = await PullRequest.find({ _id: req.params.userId })
-        res.status(200).json({ userPullRequests })
+        req.body.paginate = { model: 'pullRequests', collection: PullRequest, key: 'userPullRequests', where: {} }
+        next()
     } catch (error) {
         throw error
     }
 }
 
-export const getPullRequest = async (req: Request, res: Response): Promise<void> => {
+export const getProjectPullRequests = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        req.body.paginate = { model: 'pullRequests', collection: PullRequest, key: 'projectPullRequests', where: { "projectId": req.params.projectId } }
+        next()
+    } catch (error) {
+        console.log({ error });
+    }
+}
+
+export const getPullRequest = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const pullRequest: IPullRequest | null = await PullRequest.findOne({ _id: req.params.pullRequestId })
         res.status(200).json({ pullRequest })
@@ -30,7 +40,7 @@ export const getPullRequest = async (req: Request, res: Response): Promise<void>
 }
 
 
-export const addPullRequest = async (req: Request, res: Response): Promise<void> => {
+export const addPullRequest = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const body = req.body
 
@@ -50,7 +60,7 @@ export const addPullRequest = async (req: Request, res: Response): Promise<void>
     }
 }
 
-export const updatePullRequest = async (req: Request, res: Response): Promise<void> => {
+export const updatePullRequest = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const {
             params: { id },
@@ -71,7 +81,7 @@ export const updatePullRequest = async (req: Request, res: Response): Promise<vo
     }
 }
 
-export const deletePullRequest = async (req: Request, res: Response): Promise<void> => {
+export const deletePullRequest = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const deletedPullRequest: IPullRequest | null = await PullRequest.findByIdAndRemove(
             req.params.id

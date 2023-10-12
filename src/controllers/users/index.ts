@@ -1,4 +1,4 @@
-import { Response, Request } from "express"
+import { Response, Request, NextFunction } from "express"
 import { IUser } from "./../../types/users"
 import User from "../../models/users"
 import jwt from 'jsonwebtoken';
@@ -6,16 +6,16 @@ import bcrypt from 'bcrypt';
 
 const secretKey = 'your-secret-key';
 
-const getUsers = async (req: Request, res: Response): Promise<void> => {
+const getUsers = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const users: IUser[] = await User.find()
-        res.status(200).json({ users })
+        req.body.paginate = { model: 'users', collection: User, key: 'users' }
+        next()
     } catch (error) {
         res.status(500).json({ message: "Uncaught Error", error })
     }
 }
 
-export const getUser = async (req: Request, res: Response): Promise<void> => {
+export const getUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const user: IUser | null = await User.findOne({ _id: req.params.userId })
         res.status(200).json({ user, _id: req.params.userId })
@@ -25,7 +25,7 @@ export const getUser = async (req: Request, res: Response): Promise<void> => {
 }
 
 async function hashPassword(password: string): Promise<string> {
-    const saltRounds = 10; // You can adjust the number of salt rounds for security
+    const saltRounds = 10;
 
     try {
         const hashedPassword = await bcrypt.hash(password, saltRounds);
@@ -35,7 +35,7 @@ async function hashPassword(password: string): Promise<string> {
     }
 }
 
-const addUser = async (req: Request, res: Response): Promise<void> => {
+const addUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const body = req.body as Pick<IUser, "firstName" | "lastName" | "email" | "role" | "password">
 
@@ -62,7 +62,7 @@ const addUser = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-const loginUser = async (req: Request, res: Response): Promise<void> => {
+const loginUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const { email, password } = req.body as Pick<IUser, "email" | "password">
 
@@ -89,7 +89,7 @@ const loginUser = async (req: Request, res: Response): Promise<void> => {
 
 
 
-const updateUser = async (req: Request, res: Response): Promise<void> => {
+const updateUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const {
             params: { id },
@@ -110,7 +110,7 @@ const updateUser = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-const deleteUser = async (req: Request, res: Response): Promise<void> => {
+const deleteUser = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const deletedUser: IUser | null = await User.findByIdAndRemove(
             req.params.id

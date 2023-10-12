@@ -1,9 +1,10 @@
 import { Router } from "express"
 import { getUsers, addUser, updateUser, deleteUser, loginUser, getUser } from "../../controllers/users"
+import paginate from '../../middlewares/paginate'
 
 const router: Router = Router()
 
-router.get("/users", getUsers)
+router.get("/users", getUsers, paginate)
 
 router.get("/users/:userId", getUser)
 

@@ -1,15 +1,18 @@
 import { Router } from "express"
 import {
     getUserPullRequests, addPullRequest, updatePullRequest,
-    deletePullRequest, getPullRequest, getGlobalPullRequests
+    deletePullRequest, getPullRequest, getGlobalPullRequests, getProjectPullRequests
 } from "../../controllers/pullRequests"
 import { authenticateToken } from '../jwt'
+import paginate from "../../middlewares/paginate"
 
 const router: Router = Router()
 
-router.get("/pullRequests/global", authenticateToken, getGlobalPullRequests)
+router.get("/pullRequests/global", authenticateToken, getGlobalPullRequests, paginate)
 
-router.get("/pullRequests/user/:userId", authenticateToken, getUserPullRequests)
+router.get("/pullRequests/user/:userId", authenticateToken, getUserPullRequests, paginate)
+
+router.get("/pullRequests/project/:projectId", authenticateToken, getProjectPullRequests, paginate)
 
 router.get("/pullRequests/:pullRequestId", authenticateToken, getPullRequest)
 

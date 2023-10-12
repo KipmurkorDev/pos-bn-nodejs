@@ -1,28 +1,29 @@
-import { Response, Request } from "express"
+import { Response, Request, NextFunction } from "express"
 import { IProject } from "../../types/projects"
 import Project from "../../models/projects"
 import PullRequests from "../../models/pullRequests"
 import Issues from "../../models/issues"
 
-export const getGlobalProjects = async (req: Request, res: Response): Promise<void> => {
+export const getGlobalProjects = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const globalProjects: IProject[] = await Project.find()
-        res.status(200).json({ globalProjects })
+        req.body.paginate = { model: 'projects', collection: Project, key: 'globalProjects' }
+        next()
     } catch (error) {
         throw error
     }
 }
 
-export const getUserProjects = async (req: Request, res: Response): Promise<void> => {
+export const getUserProjects = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const userProjects: IProject[] = await Project.find()
-        res.status(200).json({ userProjects })
+        req.body.paginate = { model: 'projects', collection: Project, key: 'userProjects', where: {} }
+        next()
     } catch (error) {
         throw error
     }
 }
 
-export const getProject = async (req: Request, res: Response): Promise<void> => {
+
+export const getProject = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const project: IProject | null = await Project.findOne({ _id: req.params.projectId })
         res.status(200).json({ project })
@@ -32,7 +33,7 @@ export const getProject = async (req: Request, res: Response): Promise<void> => 
 }
 
 
-const addProject = async (req: Request, res: Response): Promise<void> => {
+const addProject = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const body = req.body
 
@@ -55,7 +56,7 @@ const addProject = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-const updateProject = async (req: Request, res: Response): Promise<void> => {
+const updateProject = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const {
             params: { id },
@@ -76,7 +77,7 @@ const updateProject = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
-const deleteProject = async (req: Request, res: Response): Promise<void> => {
+const deleteProject = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const deletedProject: IProject | null = await Project.findByIdAndRemove(
             req.params.id
