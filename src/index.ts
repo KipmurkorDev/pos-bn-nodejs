@@ -6,6 +6,7 @@ import projectsRoutes from "./routes/projects";
 import pullRequestsRoutes from "./routes/pullRequests";
 import issuesRoutes from './routes/issues'
 import bodyParser from 'body-parser'
+import paymentRoutes from './routes/payments'
 
 require('dotenv').config();
 
@@ -23,6 +24,7 @@ app.use(userRoutes);
 app.use(projectsRoutes);
 app.use(pullRequestsRoutes);
 app.use(issuesRoutes)
+app.use(paymentRoutes)
 
 const uri: string = `mongodb+srv://carenkurgat765:${process.env.MONGO_PASSWORD}@pos0.lcyyjkc.mongodb.net/`;
 

@@ -22,10 +22,10 @@ export const getUserIssues = async (req: Request, res: Response, next: NextFunct
 
 export const getProjectIssues = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        req.body.paginate = { collection: Issue, model: 'issues', key: 'projectIssues', where: { _id: req.params.projectId } }
+        req.body.paginate = { collection: Issue, model: 'issues', key: 'projectIssues', where: { 'projectId': req.params.projectId } }
         next()
     } catch (error) {
-        throw error
+        console.log({ error });
     }
 }
 
