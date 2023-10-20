@@ -11,6 +11,15 @@ const getPayments = async (req: Request, res: Response): Promise<void> => {
     }
 }
 
+const getWalletInfo = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const payments: IPayment[] = await Payment.find()
+        res.status(200).json({ payments, totalAccountBalance: '', ucommittedAmmount: '', committedAmmount: '' })
+    } catch (error) {
+        throw error
+    }
+}
+
 const addPayment = async (req: Request, res: Response): Promise<void> => {
     try {
         const body = req.body as Pick<IPayment, "name" | "description" | "link">
